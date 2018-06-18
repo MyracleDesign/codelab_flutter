@@ -92,6 +92,13 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
 
     message.animationController.forward();
   }
+
+  @override
+  void dispose() {
+    for (ChatMessage message in _messages)
+      message.animationController.dispose();
+    super.dispose();
+  }
 }
 
 class ChatMessage extends StatelessWidget {
@@ -104,7 +111,13 @@ class ChatMessage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return new Container(
+    return new SizeTransition(
+      sizeFactor: new CurvedAnimation(
+        parent: animationController,
+        curve: Curves.elasticOut,
+      ),
+      axisAlignment: 0.0,
+      child: new Container(
         margin: const EdgeInsets.symmetric(vertical: 10.0),
         child: new Row(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -126,6 +139,8 @@ class ChatMessage extends StatelessWidget {
               ],
             )
           ],
-        ));
+        ),
+      ),
+    );
   }
 }
